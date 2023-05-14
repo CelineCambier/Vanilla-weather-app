@@ -22,7 +22,6 @@ function formatDay(timestamp) {
 }
 
 function displayForecast(response) {
-    console.log(response.data);
     let forecast = response.data.daily;
 
     let forecastElement = document.querySelector("#forecast");
@@ -119,4 +118,4 @@ form.addEventListener("submit", handleSubmit);
 let positionButton = document.querySelector(".myPositionButton");
 positionButton.addEventListener("click", getCurrentPosition);
 
-search("London");
+search("Miami");
