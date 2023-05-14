@@ -59,7 +59,7 @@ function displayForecast(response) {
 
 function getForecast(coordinates) {
     let apiKey = "e48e1aab0acf4fc215c13f02ct8bo5ab";
-    let apiUrl = `https://api.shecodes.io/weather/v1/forecast?lon=${coordinates.longitude}&lat=${coordinates.latitude}&key=${apiKey}&units=metric`;
+    let apiUrl = `https://api.shecodes.io/weather/v1/forecast?lon=${coordinates.longitude}&lat=${coordinates.latitude}&key=${apiKey}&units=imperial`;
     axios.get(apiUrl).then(displayForecast);
 }
 
@@ -78,7 +78,7 @@ function displayTemperature(response){
     cityElement.innerHTML = response.data.city;
     descriptionElement.innerHTML = response.data.condition.description;
     humidityElement.innerHTML = response.data.temperature.humidity;
-    windElement.innerHTML = Math.round(response.data.wind.speed);
+    windElement.innerHTML = Math.round(response.data.wind.speed*0.6213711922);
     dateElement.innerHTML = formatDate(response.data.time * 1000);
     iconElement.setAttribute("src", `http://shecodes-assets.s3.amazonaws.com/api/weather/icons/${response.data.condition.icon}.png`); 
     iconElement.setAttribute("alt", response.data.condition.description);
@@ -88,7 +88,7 @@ function displayTemperature(response){
 
 function search(city) {
     let apiKey = "e48e1aab0acf4fc215c13f02ct8bo5ab";
-    let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
+    let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=imperial`;
     axios.get(apiUrl).then(displayTemperature);
 }
 
@@ -98,7 +98,7 @@ function searchLocation(position) {
     let apiKey = "e48e1aab0acf4fc215c13f02ct8bo5ab";
     let lat = position.coords.latitude;
     let lon = position.coords.longitude;
-    let apiUrl = `https://api.shecodes.io/weather/v1/current?lon=${lon}&lat=${lat}&key=${apiKey}&units=metric`;
+    let apiUrl = `https://api.shecodes.io/weather/v1/current?lon=${lon}&lat=${lat}&key=${apiKey}&units=imperial`;
     axios.get(apiUrl).then(displayTemperature);
 }
 
@@ -113,36 +113,10 @@ function getCurrentPosition(event) {
   navigator.geolocation.getCurrentPosition(searchLocation);
 }
 
-function displayFahrenheitTemperature(event) {
-    event.preventDefault();
-    let temperatureElement = document.querySelector("#temperature");
-    celsiusLink.classList.remove("active");
-    fahrenheitLink.classList.add("active");
-    let fahrenheitTemperature = (celciusTemperature * 9) / 5 + 32;
-    temperatureElement.innerHTML = Math.round(fahrenheitTemperature);
-}
-
-function displayCelsiusTemperature(event) {
-    event.preventDefault();
-    celsiusLink.classList.add("active");
-    fahrenheitLink.classList.remove("active");
-    let temperatureElement = document.querySelector("#temperature");
-    temperatureElement.innerHTML = Math.round(celciusTemperature);
-}
-
-let celciusTemperature = null;
-
 let form = document.querySelector("#search-form");
 form.addEventListener("submit", handleSubmit);
 
 let positionButton = document.querySelector(".myPositionButton");
 positionButton.addEventListener("click", getCurrentPosition);
 
-let fahrenheitLink = document.querySelector("#fahrenheit-link");
-fahrenheitLink.addEventListener("click", displayFahrenheitTemperature);
-
-let celsiusLink = document.querySelector("#celsius-link");
-celsiusLink.addEventListener("click", displayCelsiusTemperature);
-
 search("London");
-displayForecast();
